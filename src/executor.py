@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 class Executor:
     """Class executor stores env variables and executes commands depending on their name
