@@ -1,4 +1,8 @@
+import subprocess
+
 class Executor:
+    """Class executor stores env variables and executes commands depending on their name
+    To construct it you only need an Environment class instance"""
     def __init__(self, environment):
         # Environment class here
         self.environment = environment
