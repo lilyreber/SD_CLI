@@ -1,5 +1,4 @@
 import os
-import pytest
 
 from src.command import Command
 from src.enviroment import Environment
