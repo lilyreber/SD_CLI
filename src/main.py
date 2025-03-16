@@ -1,4 +1,4 @@
-from src.enviroment import Environment
+from src.environment import Environment
 from src.parser import Parser
 from src.process_manager import ProcessManager
 

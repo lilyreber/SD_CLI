@@ -1,7 +1,7 @@
 import os
 
 from src.command import Command
-from src.enviroment import Environment
+from src.environment import Environment
 from src.executor import Executor
 from src.parser import Parser
 from src.process_manager import ProcessManager
