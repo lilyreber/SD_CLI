@@ -13,6 +13,7 @@ def main():
     while True:
         try:
             input_line = input("cli> ")
+            # TODO make here substituition, before parsing
             command = Parser.parse(input_line)
             process_manager.run_command(command)
         except KeyboardInterrupt:
