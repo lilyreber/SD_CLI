@@ -67,7 +67,6 @@ class Parser:
                     lhs, rhs = command_name.split('=')
                     self.variables[lhs.strip()] = rhs.strip()
                     return []
-            return [self.single_parse(commands[0])]
         return [self.single_parse(command) for command in commands]
     
 
