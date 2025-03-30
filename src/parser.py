@@ -33,10 +33,8 @@ class Parser:
 
 
         elif not StringToCommand.is_enum_value(command_name.upper()):
-            print("External")
             return StringToCommand.get_external()(tokens)
         else:
-            print("Internal")
             args = tokens[1:]
             flag_dict = {}
 
