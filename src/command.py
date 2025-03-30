@@ -153,5 +153,5 @@ class StringToCommand(Enum):
     
 
 if __name__ == '__main__':
-    print(StringToCommand.CAT.value([]))
+    print(StringToCommand.is_enum_value("CAT"))
     # _ = StringToCommand.WC([])

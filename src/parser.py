@@ -12,6 +12,8 @@ class Parser:
     
     def single_parse(self, command):
         tokens = command.split()
+        if not tokens:
+            return None
         command_name = tokens[0]
         if command_name == 'grep':
 
@@ -60,6 +62,8 @@ class Parser:
 
     def parse(self, input_line):
         commands = input_line.split('|')
+        if not commands:
+            return []
         if len(commands) == 1:
             if len(commands[0].split()) == 1:
                 command_name = commands[0].split()[0]
