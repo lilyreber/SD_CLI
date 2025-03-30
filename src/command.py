@@ -49,7 +49,7 @@ class Wc(Command):
             words = len(content.split())
             # choose encoding then count bytes with len
             bytes_size = len(content.encode("utf-8"))
-            print(f"{lines} {words} {bytes_size} {filename}", file=stdout)
+            print(f"{lines} {words} {bytes_size}", file=stdout)
         return 0
 
 class Cat(Command):
@@ -138,15 +138,19 @@ class Grep(Command):
                     print(25*"-", file=stdout)
 
 
-class StringToCommand(Enum):
-    WC = Wc
-    CAT = Cat
-    EXIT = Exit
-    PWD = Pwd
-    ECHO = Echo
+class StringToCommand:
+    commands = {
+        "WC":Wc,
+        "CAT":Cat,
+        "EXIT":Exit,
+        "PWD":Pwd,
+        "ECHO":Echo
+        }
 
-    def is_enum_value(value):
-        return value in StringToCommand._value2member_map_
+    @classmethod
+    def is_enum_value(cls,value):
+        return value in cls.commands
     
+    @staticmethod
     def get_external():
         return External

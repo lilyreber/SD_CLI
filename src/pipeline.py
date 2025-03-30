@@ -7,7 +7,7 @@ class Pipeline:
 
     def execute(self, commands):
         if len(commands) == 1:
-            return commands[0].run(sys.stdin.fileno(), sys.stdout.fileno(), sys.stderr)
+            return commands[0].run(sys.stdin, sys.stdout, sys.stderr)
         else:
             read_d = None
             write_d = None
