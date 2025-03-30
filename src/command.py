@@ -1,4 +1,4 @@
-from enum import Enum
+from imaplib import Commands
 import subprocess
 import sys
 import os
@@ -42,14 +42,18 @@ class Wc(Command):
                     return 1
         else:
             # read from pipe or stdin
-            content = stdin.read()
+            tmp1 = os.fdopen(stdin, "r")
+            content = tmp1.read()
+            tmp1.close()
             #wc actually counts '\n' too
             lines = content.count('\n')
             # split deletes all space symbols and returns an array of words
             words = len(content.split())
             # choose encoding then count bytes with len
             bytes_size = len(content.encode("utf-8"))
-            print(f"{lines} {words} {bytes_size} {filename}", file=stdout)
+            tmp = os.fdopen(stdout, "w")
+            print(f"{lines} {words} {bytes_size}", file=tmp)
+            tmp.close()
         return 0
 
 class Cat(Command):
@@ -76,7 +80,9 @@ class Echo(Command):
         super().__init__(args, flag_dict)
     
     def run(self,stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        print(" ".join(self.args), file=stdout)
+        tmp = os.fdopen(stdout, "w")
+        print(" ".join(self.args), file=tmp)
+        tmp.close()
         return 0
 
 class Pwd(Command):
@@ -138,20 +144,21 @@ class Grep(Command):
                     print(25*"-", file=stdout)
 
 
-class StringToCommand(Enum):
-    WC = Wc
-    CAT = Cat
-    EXIT = Exit
-    PWD = Pwd
-    ECHO = Echo
-
-    def is_enum_value(value):
-        return value in StringToCommand._value2member_map_
+class StringToCommand:
     
+    commands = {
+        "WC":Wc,
+        "CAT":Cat,
+        "EXIT":Exit,
+        "PWD":Pwd,
+        "ECHO":Echo
+        }
+
+    @classmethod
+    def is_enum_value(cls, value):
+        return value in cls.commands
+    
+    @classmethod
     def get_external():
         return External
     
-
-if __name__ == '__main__':
-    print(StringToCommand.CAT.value([]))
-    # _ = StringToCommand.WC([])
