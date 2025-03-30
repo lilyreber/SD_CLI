@@ -30,9 +30,8 @@ class Parser:
             flag_dict.pop('file')
 
 
-        elif not StringToCommand.is_enum_value(command_name):
-            args = tokens[1:]
-            return StringToCommand.external(args)
+        elif not StringToCommand.is_enum_value(command_name.upper()):
+            return StringToCommand.get_external()(tokens)
         else:
             args = tokens[1:]
             flag_dict = {}
@@ -55,7 +54,7 @@ class Parser:
                         flag_dict[token] = None
                 i += 1
 
-        return StringToCommand[command_name](args=args, flag_dict=flag_dict)
+        return StringToCommand[command_name.upper()].value(args=args, flag_dict=flag_dict)
             
             
 

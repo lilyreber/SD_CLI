@@ -9,21 +9,20 @@ class Command:
     """
     a class, which encapsulates all logic of Bash command
     """
-    def __init__(self, name, args, flag_dict=None):
+    def __init__(self, args, flag_dict=None):
         # list of command arguments
-        self.name = name
         self.args = args
         self.flag_dict = flag_dict
     
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         pass
 
 class Wc(Command):
 
-    def __init__(self, name, args, flag_dict=None):
-        super().__init__(name, args, flag_dict)
+    def __init__(self, args, flag_dict=None):
+        super().__init__(args, flag_dict)
 
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         filenames = self.args
         if filenames:
             for filename in filenames:
@@ -54,10 +53,10 @@ class Wc(Command):
         return 0
 
 class Cat(Command):
-    def __init__(self, name, args, flag_dict=None):
-        super().__init__(name, args, flag_dict)
+    def __init__(self, args, flag_dict=None):
+        super().__init__(args, flag_dict)
     
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         filenames = self.args
         if filenames:
             for filename in filenames:
@@ -73,33 +72,33 @@ class Cat(Command):
         return 0
 
 class Echo(Command):
-    def __init__(self, name, args, flag_dict=None):
-        super().__init__(name, args, flag_dict)
+    def __init__(self, args, flag_dict=None):
+        super().__init__(args, flag_dict)
     
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def run(self,stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         print(" ".join(self.args), file=stdout)
         return 0
 
 class Pwd(Command):
-    def __init__(self, name, args, flag_dict=None):
-        super().__init__(name, args, flag_dict)
+    def __init__(self, args, flag_dict=None):
+        super().__init__(args, flag_dict)
     
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         print(os.getcwd(), file=stdout)
 
 class Exit(Command):
-    def __init__(self, name, args, flag_dict=None):
-        super().__init__(name, args, flag_dict)
+    def __init__(self, args, flag_dict=None):
+        super().__init__(args, flag_dict)
     
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         return exit(0)
     
 class External(Command):
-    def __init__(self, name, args):
-        super().__init__(name, args)
-    def run(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+    def __init__(self, args):
+        super().__init__(args)
+    def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         proc = subprocess.Popen(
-        [self.name]+self.args,
+        self.args,
         stdin=stdin,
         stdout=stdout,
         stderr=stderr
@@ -145,9 +144,14 @@ class StringToCommand(Enum):
     EXIT = Exit
     PWD = Pwd
     ECHO = Echo
-    external = External
 
     def is_enum_value(value):
         return value in StringToCommand._value2member_map_
     
+    def get_external():
+        return External
+    
 
+if __name__ == '__main__':
+    print(StringToCommand.CAT.value([]))
+    # _ = StringToCommand.WC([])
