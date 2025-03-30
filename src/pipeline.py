@@ -1,5 +1,4 @@
-from cli import CLI
-import itertools
+
 import os
 import sys
 
@@ -9,7 +8,7 @@ class Pipeline:
     @staticmethod
     def execute(commands):
         if len(commands) == 1:
-            CLI.prev_status_code = cmd.run(sys.stdin, sys.stdout, sys.stderr)
+            return cmd.run(sys.stdin, sys.stdout, sys.stderr)
         else:
             read_d = None
             write_d = None
@@ -34,6 +33,6 @@ class Pipeline:
                 os.close(in_pipe)
                 curr_status_code = cmd.run(in_pipe, out_pipe, err_pipe)
                 
-            CLI.prev_status_code = curr_status_code
+            return curr_status_code
             
 

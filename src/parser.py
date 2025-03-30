@@ -1,4 +1,4 @@
-from src.command import Command
+from command import Command
 
 class Parser:
     """Parser class actually just deletes space symbols from input and creates Command instance"""
