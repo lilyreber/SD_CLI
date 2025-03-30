@@ -6,3 +6,6 @@ class Parser:
     def parse(input_line):
         tokens = input_line.split()
         return Command(tokens)
+    
+    def __init__(self):
+        self.variables = os.environ.copy()
