@@ -5,4 +5,5 @@ class Command:
     def __init__(self, args):
         # list of command arguments
         self.args = args
+        self.error = None
 
