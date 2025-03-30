@@ -1,7 +1,8 @@
 from cli import CLI
 
 def main():
-    CLI.run()
+    cli = CLI()
+    cli.run()
 
 if __name__ == "__main__":
     main()

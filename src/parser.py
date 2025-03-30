@@ -1,5 +1,4 @@
 from command import StringToCommand
-from src.command import Command
 import argparse
 import os
 
@@ -11,7 +10,7 @@ class Parser:
     def __init__(self):
         self.variables = os.environ.copy()
     
-    def single_parse(command):
+    def single_parse(self, command):
         tokens = command.split()
         command_name = tokens[0]
         if command_name == 'grep':

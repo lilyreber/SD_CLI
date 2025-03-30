@@ -5,8 +5,7 @@ import sys
 class Pipeline:
     curr_status_code = 0
 
-    @staticmethod
-    def execute(commands):
+    def execute(self, commands):
         if len(commands) == 1:
             return cmd.run(sys.stdin, sys.stdout, sys.stderr)
         else:

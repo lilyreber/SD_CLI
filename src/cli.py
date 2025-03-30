@@ -6,13 +6,13 @@ class CLI:
     
     prev_status_code = 0
 
-    @staticmethod
-    def run():
+    def run(self):
+        parser = Parser()
         while True:
             try:
                 input_line = input("cli> ")
                 # Commands - array of Command objects
-                commands = Parser.parse(input_line) 
+                commands = parser.parse(input_line) 
 
                 prev_status_code = Pipeline.execute(commands)
             except KeyboardInterrupt:
