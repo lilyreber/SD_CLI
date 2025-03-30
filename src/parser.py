@@ -31,7 +31,7 @@ class Parser:
             flag_dict.pop('file')
 
 
-        elif command_name not in StringToCommand:
+        elif not StringToCommand.is_enum_value(command_name):
             args = tokens[1:]
             return StringToCommand.external(args)
         else:

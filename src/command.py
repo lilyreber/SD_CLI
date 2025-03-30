@@ -146,5 +146,8 @@ class StringToCommand(Enum):
     PWD = Pwd
     ECHO = Echo
     external = External
+
+    def is_enum_value(value):
+        return value in StringToCommand._value2member_map_
     
 
