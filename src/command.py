@@ -144,7 +144,8 @@ class StringToCommand:
         "CAT":Cat,
         "EXIT":Exit,
         "PWD":Pwd,
-        "ECHO":Echo
+        "ECHO":Echo,
+        "GREP": Grep
         }
 
     @classmethod
@@ -152,5 +153,5 @@ class StringToCommand:
         return value in cls.commands
     
     @staticmethod
-    def get_external():
+    def get_external(cls):
         return External
