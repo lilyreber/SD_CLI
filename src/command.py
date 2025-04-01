@@ -102,6 +102,7 @@ class Exit(Command):
 class External(Command):
     def __init__(self, args):
         super().__init__(args)
+
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         proc = subprocess.Popen(
         self.__args,
@@ -155,9 +156,9 @@ class StringToCommand:
         }
 
     @classmethod
-    def is_enum_value(cls,value):
+    def is_enum_value(cls, value):
         return value in cls.commands
     
     @staticmethod
-    def get_external(cls):
+    def get_external():
         return External

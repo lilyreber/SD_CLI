@@ -66,8 +66,9 @@ def test_substitute_middle():
     assert len(commands) == 1
     command = commands[0]
 
-    assert str(type(command)) == "<class 'command.Ls'>"
-    assert command.args == ['-l', 'docs/files']
+    print(commands)
+    assert str(type(command)) == "<class 'command.External'>"
+    assert command.args == ['ls', '-l', 'docs/files']
 
 
 def test_substitute_system():
@@ -78,5 +79,5 @@ def test_substitute_system():
     assert len(commands) == 1
     command = commands[0]
 
-    assert str(type(command)) == "<class 'src.command.Echo'>"
+    assert str(type(command)) == "<class 'command.Echo'>"
     assert command.args == [os.getenv("HOME")]
