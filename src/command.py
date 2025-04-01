@@ -9,8 +9,9 @@ class Command:
     """
     a class, which encapsulates all logic of Bash command
     """
-    def __init__(self, args, flag_dict=None):
+    def __init__(self, name, args, flag_dict=None):
         # list of command arguments
+        self._name = name
         self._args = args
         self._flag_dict = flag_dict
     
@@ -24,7 +25,7 @@ class Command:
 class Wc(Command):
 
     def __init__(self, args, flag_dict=None):
-        super().__init__(args, flag_dict)
+        super().__init__('wc', args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         filenames = self._args
@@ -58,7 +59,7 @@ class Wc(Command):
 
 class Cat(Command):
     def __init__(self, args, flag_dict=None):
-        super().__init__(args, flag_dict)
+        super().__init__('cat', args, flag_dict)
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         filenames = self._args
@@ -77,7 +78,7 @@ class Cat(Command):
 
 class Echo(Command):
     def __init__(self, args, flag_dict=None):
-        super().__init__(args, flag_dict)
+        super().__init__('echo', args, flag_dict)
     
     def run(self,stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         print(" ".join(self._args), file=stdout)
@@ -89,17 +90,18 @@ class Pwd(Command):
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         print(os.getcwd(), file=stdout)
+        return 0
 
 class Exit(Command):
     def __init__(self, args, flag_dict=None):
-        super().__init__(args, flag_dict)
+        super().__init__('exit', args, flag_dict)
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         return exit(0)
     
 class External(Command):
     def __init__(self, args):
-        super().__init__(args)
+        super().__init__(name=args[0], args=args)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         try:
@@ -117,7 +119,7 @@ class External(Command):
 
 class Grep(Command):
     def __init__(self, args, flag_dict=None):
-        super().__init__(args, flag_dict)
+        super().__init__('grep', args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         regex_pattern, filename = self._args[0], self._args[1]
@@ -137,14 +139,18 @@ class Grep(Command):
 
         with open(filename, "r", encoding="utf-8") as file:
             lines = [line.rstrip("\n") for line in file.readlines()]
-
+            found = False
             for i, line in enumerate(lines):
                 if pattern.search(line):
+                    found = True
                     for j in range(flag_A + 1):
                         if i + j >= len(lines):
                             break
                         print(lines[i + j], file=stdout)
                     print(25*"-", file=stdout)
+        if found:
+            return 0
+        return 1
 
 
 class CommandFactory:

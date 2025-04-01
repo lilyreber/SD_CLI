@@ -6,7 +6,7 @@ from environment import Environment
 
 
 class Parser:
-    """Parser class actually just deletes space symbols from input and creates Command instance"""
+    """Parser class splits line by |, parses name, flags and args and returns list[Command]"""
 
     @staticmethod
     def single_parse(command):

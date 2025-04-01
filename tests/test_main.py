@@ -250,3 +250,12 @@ def test_grep_after_flag_output():
     assert lines[0] == "II этап тестирования"
     assert lines[1] == "следующая строка"
     assert ret == 0
+
+def test_unknown():
+    env = Environment()
+    command = Parser.parse('foo bar baz', env)[0]
+    res = open("res", "w+")
+    ret = command.run(stdin=subprocess.DEVNULL,stderr=res)
+    res.seek(0)
+    output = res.read()
+    assert output == "Program name is unknown\n"
