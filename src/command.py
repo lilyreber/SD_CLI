@@ -11,25 +11,23 @@ class Command:
     """
     def __init__(self, args, flag_dict=None):
         # list of command arguments
-        self.args = args
-        self.flag_dict = flag_dict
+        self._args = args
+        self._flag_dict = flag_dict
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         pass
 
     def get_args(self):
-        return self.__args
+        return self._args
 
 
 class Wc(Command):
 
     def __init__(self, args, flag_dict=None):
         super().__init__(args, flag_dict)
-        self.__args = args
-        self.__flag_dict = flag_dict
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        filenames = self.__args
+        filenames = self._args
         if filenames:
             for filename in filenames:
                 try:
@@ -63,7 +61,7 @@ class Cat(Command):
         super().__init__(args, flag_dict)
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        filenames = self.__args
+        filenames = self._args
         if filenames:
             for filename in filenames:
                 try:
@@ -82,7 +80,7 @@ class Echo(Command):
         super().__init__(args, flag_dict)
     
     def run(self,stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        print(" ".join(self.__args), file=stdout)
+        print(" ".join(self._args), file=stdout)
         return 0
 
 class Pwd(Command):
@@ -105,7 +103,7 @@ class External(Command):
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         proc = subprocess.Popen(
-        self.__args,
+        self._args,
         stdin=stdin,
         stdout=stdout,
         stderr=stderr
@@ -118,10 +116,10 @@ class Grep(Command):
         super().__init__(args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        regex_pattern, filename = self.__args[0], self.__args[1]
-        flag_i = self.__flag_dict.get("i", None)
-        flag_A = self.__flag_dict.get("A", 0)
-        flag_w = self.__flag_dict.get("w", False)
+        regex_pattern, filename = self._args[0], self._args[1]
+        flag_i = self._flag_dict.get("i", None)
+        flag_A = self._flag_dict.get("A", 0)
+        flag_w = self._flag_dict.get("w", False)
 
         if flag_w:
             regex_pattern = rf"\b{regex_pattern}\b"
@@ -145,7 +143,7 @@ class Grep(Command):
                     print(25*"-", file=stdout)
 
 
-class StringToCommand:
+class CommandFactory:
     commands = {
         "WC":Wc,
         "CAT":Cat,
@@ -154,11 +152,16 @@ class StringToCommand:
         "ECHO":Echo,
         "GREP": Grep
         }
+    
 
     @classmethod
     def is_enum_value(cls, value):
         return value in cls.commands
     
     @staticmethod
-    def get_external():
-        return External
+    def build_external(args):
+        return External(args)
+    
+    @classmethod
+    def build_command(cls, name, args, flag_dict=None):
+        return cls.commands[name](args=args, flag_dict=flag_dict)

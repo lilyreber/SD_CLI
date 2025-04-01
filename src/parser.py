@@ -1,8 +1,8 @@
-from command import StringToCommand
+from command import CommandFactory
 import argparse
 import os
 
-from src.environment import Environment
+from environment import Environment
 
 
 class Parser:
@@ -34,8 +34,8 @@ class Parser:
             flag_dict.pop('file')
 
 
-        elif not StringToCommand.is_enum_value(command_name.upper()):
-            return StringToCommand.get_external()(tokens)
+        elif not CommandFactory.is_enum_value(command_name.upper()):
+            return CommandFactory.build_external(tokens)
         else:
             args = tokens[1:]
             flag_dict = {}
@@ -58,7 +58,7 @@ class Parser:
                         flag_dict[token] = None
                 i += 1
 
-        return StringToCommand.commands[command_name.upper()](args=args, flag_dict=flag_dict)
+        return CommandFactory.build_command(command_name.upper(), args=args, flag_dict=flag_dict)
 
     @staticmethod
     def parse(input_line, env: Environment):

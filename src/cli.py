@@ -2,7 +2,7 @@ from parser import Parser
 from pipeline import Pipeline
 from environment import Environment
 
-import os
+import sys
 
 
 class CLI:
@@ -24,4 +24,4 @@ class CLI:
                 self.__prev_status_code = self.__pipeline.execute(commands)
             except KeyboardInterrupt:
                 # Handle Ctrl+C interruption gracefully
-                print("\nUse 'exit' to quit.", file=os.stdout)
+                print("\nUse 'exit' to quit.", file=sys.stdout)
