@@ -2,15 +2,14 @@ from command import StringToCommand
 import argparse
 import os
 
-
+from src.environment import Environment
 
 
 class Parser:
     """Parser class actually just deletes space symbols from input and creates Command instance"""
-    def __init__(self):
-        self.variables = os.environ.copy()
-    
-    def single_parse(self, command):
+
+    @staticmethod
+    def single_parse(command):
         tokens = command.split()
         if not tokens:
             return None
@@ -60,11 +59,12 @@ class Parser:
                 i += 1
 
         return StringToCommand.commands[command_name.upper()](args=args, flag_dict=flag_dict)
-            
-            
 
-    def parse(self, input_line):
-        commands = input_line.split('|')
+    @staticmethod
+    def parse(input_line, env: Environment):
+        substitute_line = env.substitute_vars(input_line)
+        commands = substitute_line.split('|')
+
         if not commands:
             return []
         if len(commands) == 1:
@@ -72,10 +72,7 @@ class Parser:
                 command_name = commands[0].split()[0]
                 if '=' in command_name:
                     lhs, rhs = command_name.split('=')
-                    self.variables[lhs.strip()] = rhs.strip()
+                    env.set_variable(lhs.strip(), rhs.strip())
                     return []
-        return [self.single_parse(command) for command in commands]
-    
 
-
-    
+        return [Parser.single_parse(command) for command in commands]

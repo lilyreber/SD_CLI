@@ -11,17 +11,22 @@ class Command:
     """
     def __init__(self, args, flag_dict=None):
         # list of command arguments
-        self.__args = args
-        self.__flag_dict = flag_dict
+        self.args = args
+        self.flag_dict = flag_dict
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         pass
+
+    def get_args(self):
+        return self.__args
 
 
 class Wc(Command):
 
     def __init__(self, args, flag_dict=None):
         super().__init__(args, flag_dict)
+        self.__args = args
+        self.__flag_dict = flag_dict
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         filenames = self.__args
