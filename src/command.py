@@ -102,14 +102,18 @@ class External(Command):
         super().__init__(args)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        proc = subprocess.Popen(
-        self._args,
-        stdin=stdin,
-        stdout=stdout,
-        stderr=stderr
-        )
-        proc.wait()
-        return proc.returncode
+        try:
+            proc = subprocess.Popen(
+            self._args,
+            stdin=stdin,
+            stdout=stdout,
+            stderr=stderr
+            )
+            proc.wait()
+            return proc.returncode
+        except FileNotFoundError:
+            print("Program name is unknown", file=stderr)
+            return 1
 
 class Grep(Command):
     def __init__(self, args, flag_dict=None):
@@ -117,9 +121,9 @@ class Grep(Command):
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         regex_pattern, filename = self._args[0], self._args[1]
-        flag_i = self._flag_dict.get("i", None)
-        flag_A = self._flag_dict.get("A", 0)
-        flag_w = self._flag_dict.get("w", False)
+        flag_i = self._flag_dict.get("ignore_case")
+        flag_A = self._flag_dict.get("after") or 0
+        flag_w = self._flag_dict.get("word")
 
         if flag_w:
             regex_pattern = rf"\b{regex_pattern}\b"
