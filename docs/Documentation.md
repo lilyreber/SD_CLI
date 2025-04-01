@@ -1,15 +1,34 @@
 # CLI
 
-The system contains the following classes: 
-1) Parser - a class, which is in charge of parsing an user input with different settings and getting forms Command further on pipeline
-2) ProcessManager - a class, which is responsible for creating new Executor and giving it a new Command
-3) Executor - a class, which executes a subprocess for external commands or just python implementation for internal supported commands (wc, cat etc)
-4) Command - a class, which encapsulates all logic of Bash command. Usually it's an array of strings.
-5) Environment - a class, which stores and gets env variables set during the script run
+## Components
+The system contains the following classes and interfaces: 
+* `CLI` - implements a command-line interface
+  * reads user input
+  * gives input to the `Parser`
+  * gives a parsed string for execution in the `Pipeline`.
+* `Parser` - parse input string
+  * split input string
+  * substitutes environment variables
+  * divides input by pipes
+* `Command` - interface for command for CLI 
+
+   * Classes that implements these interface
+
+      * `Wc` - counts lines, words, and bytes in a file 
+      * `Cat` - outputs file contents 
+      * `Echo` - prints arguments
+      * `Pwd` - prints the current directory
+      * `Exit` - terminates the CLI 
+      * `Grep` - searches for regex patterns. Supports flags: -i (ignore case), -w (whole words), -A N (print N lines after a match).
+* `Pipeline` 
+  * get list of commands 
+
 
 
 
 ## Implementation details: 
+ that reads user input, gives input to the parser, and then a parsed string for execution in the Pipeline.
+a class, which is in charge of parsing an user input with different settings and getting forms Command further on pipeline
 1) After processing a command, the Main function checks whether the command includes assigning environment variables. If so, we invoke the setter by Environment class.
 2) Object of Executor class is logical process which is responsible only for running its own Command
 3) No parallelism is needed. If two commands are called in a line they are anyway connected via pipe and the next command can’t be called before the previous because it depends on its output.

@@ -11,11 +11,12 @@ class Command:
     """
     def __init__(self, args, flag_dict=None):
         # list of command arguments
-        self.args = args
-        self.flag_dict = flag_dict
+        self.__args = args
+        self.__flag_dict = flag_dict
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         pass
+
 
 class Wc(Command):
 
@@ -23,7 +24,7 @@ class Wc(Command):
         super().__init__(args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        filenames = self.args
+        filenames = self.__args
         if filenames:
             for filename in filenames:
                 try:
@@ -57,7 +58,7 @@ class Cat(Command):
         super().__init__(args, flag_dict)
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        filenames = self.args
+        filenames = self.__args
         if filenames:
             for filename in filenames:
                 try:
@@ -76,7 +77,7 @@ class Echo(Command):
         super().__init__(args, flag_dict)
     
     def run(self,stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        print(" ".join(self.args), file=stdout)
+        print(" ".join(self.__args), file=stdout)
         return 0
 
 class Pwd(Command):
@@ -98,7 +99,7 @@ class External(Command):
         super().__init__(args)
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
         proc = subprocess.Popen(
-        self.args,
+        self.__args,
         stdin=stdin,
         stdout=stdout,
         stderr=stderr
@@ -111,10 +112,10 @@ class Grep(Command):
         super().__init__(args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        regex_pattern, filename = self.args[0], self.args[1]
-        flag_i = self.flag_dict.get("i", None)
-        flag_A = self.flag_dict.get("A", 0)
-        flag_w = self.flag_dict.get("w", False)
+        regex_pattern, filename = self.__args[0], self.__args[1]
+        flag_i = self.__flag_dict.get("i", None)
+        flag_A = self.__flag_dict.get("A", 0)
+        flag_w = self.__flag_dict.get("w", False)
 
         if flag_w:
             regex_pattern = rf"\b{regex_pattern}\b"
