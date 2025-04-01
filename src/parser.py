@@ -19,15 +19,18 @@ class Parser:
 
             parser = argparse.ArgumentParser()
 
-            parser.add_argument("pattern", type=str, help="grep pattern")
-            parser.add_argument("file", type=str, help="file to search in")
             parser.add_argument("-w", "--word", action="store_true", help="whole words only")
             parser.add_argument("-i", "--ignore-case", action="store_true", help="ignore case")
-            parser.add_argument("-A", "--after", type=int, default=0, help="number of strings after match to print")
+            parser.add_argument("-A", "--after", type=int, help="number of strings after match to print")
+            parser.add_argument("pattern", type=str, help="pattern to search for")
+            parser.add_argument("file", type=str, help="file to search in")
 
-            flag_dict = parser.parse_args(' '.join(tokens[1:]))
+            parse_string = ' '.join(tokens[1:])
+            flag_dict = parser.parse_args(parse_string.split())
             flag_dict = vars(flag_dict)
-            args = [flag_dict['pattern'], flag_dict['file']]
+            pattern = flag_dict["pattern"].strip('"')
+
+            args = [pattern, flag_dict['file']]
             flag_dict.pop('pattern')
             flag_dict.pop('file')
 
