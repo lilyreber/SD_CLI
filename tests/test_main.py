@@ -213,7 +213,7 @@ def test_grep_match_output():
     ret = command.run(stdout=res)
     res.seek(0)
     output = res.read()
-    assert "Minimal синтаксис grep" in output
+    assert "Minimal syntax grep" in output
     assert ret == 0
 
 
@@ -235,7 +235,7 @@ def test_grep_ignore_case_output():
     ret = command.run(stdout=res)
     res.seek(0)
     output = res.read()
-    assert "Minimal синтаксис grep" in output
+    assert "Minimal syntax grep" in output
     assert ret == 0
 
 
