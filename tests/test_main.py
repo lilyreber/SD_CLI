@@ -154,31 +154,31 @@ def test_parse_simple_echo():
 
 def write_test_file():
     with open("test.txt", "w", encoding="utf-8") as f:
-        f.write("Минимальный синтаксис grep\n")
-        f.write("II этап тестирования\n")
-        f.write("следующая строка\n")
+        f.write("Minimal syntax grep\n")
+        f.write("II testing stage\n")
+        f.write("next line\n")
 
 def test_parse_grep_exact_match():
     write_test_file()
     env = Environment()
-    command = Parser.parse('grep "Минимальный" test.txt', env)[0]
-    assert command._args == ["Минимальный", "test.txt"]
+    command = Parser.parse('grep "Minimal" test.txt', env)[0]
+    assert command._args == ["Minimal", "test.txt"]
     assert command._flag_dict == {'word': False, 'ignore_case': False, 'after': None}
 
 
 def test_parse_grep_dollar_anchor():
     write_test_file()
     env = Environment()
-    command = Parser.parse('grep "Минимальный$" test.txt', env)[0]
-    assert command._args == ["Минимальный$", "test.txt"]
+    command = Parser.parse('grep "Minimal$" test.txt', env)[0]
+    assert command._args == ["Minimal$", "test.txt"]
     assert command._flag_dict == {'word': False, 'ignore_case': False, 'after': None}
 
 
 def test_parse_grep_caret_anchor():
     write_test_file()
     env = Environment()
-    command = Parser.parse('grep "^Минимальный" test.txt', env)[0]
-    assert command._args == ["^Минимальный", "test.txt"]
+    command = Parser.parse('grep "^Minimal" test.txt', env)[0]
+    assert command._args == ["^Minimal", "test.txt"]
     print (command._flag_dict)
     assert command._flag_dict == {'word': False, 'ignore_case': False, 'after': None}
 
@@ -186,8 +186,8 @@ def test_parse_grep_caret_anchor():
 def test_parse_grep_ignore_case():
     write_test_file()
     env = Environment()
-    command = Parser.parse('grep -i "минимальный" test.txt', env)[0]
-    assert command._args == ["минимальный", "test.txt"]
+    command = Parser.parse('grep -i "Minimal" test.txt', env)[0]
+    assert command._args == ["Minimal", "test.txt"]
     assert command._flag_dict["ignore_case"] is True
 
 
@@ -208,18 +208,18 @@ def test_parse_grep_after_flag():
 
 def test_grep_match_output():
     env = Environment()
-    command = Parser.parse('grep "Минимальный" test.txt', env)[0]
+    command = Parser.parse('grep "Minimal" test.txt', env)[0]
     res = open("res", "w+")
     ret = command.run(stdout=res)
     res.seek(0)
     output = res.read()
-    assert "Минимальный синтаксис grep" in output
+    assert "Minimal синтаксис grep" in output
     assert ret == 0
 
 
 def test_grep_no_match_output():
     env = Environment()
-    command = Parser.parse('grep "Минимальный$" test.txt', env)[0]
+    command = Parser.parse('grep "Minimal$" test.txt', env)[0]
     res = open("res", "w+")
     ret = command.run(stdout=res)
     res.seek(0)
@@ -230,12 +230,12 @@ def test_grep_no_match_output():
 
 def test_grep_ignore_case_output():
     env = Environment()
-    command = Parser.parse('grep -i "минимальный" test.txt', env)[0]
+    command = Parser.parse('grep -i "Minimal" test.txt', env)[0]
     res = open("res", "w+")
     ret = command.run(stdout=res)
     res.seek(0)
     output = res.read()
-    assert "Минимальный синтаксис grep" in output
+    assert "Minimal синтаксис grep" in output
     assert ret == 0
 
 
