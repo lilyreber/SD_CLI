@@ -247,8 +247,8 @@ def test_grep_after_flag_output():
     res.seek(0)
     output = res.read()
     lines = output.strip().split("\n")
-    assert lines[0] == "II этап тестирования"
-    assert lines[1] == "следующая строка"
+    assert lines[0] == "II testing stage"
+    assert lines[1] == "next line"
     assert ret == 0
 
 def test_unknown():
