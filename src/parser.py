@@ -62,17 +62,56 @@ class Parser:
 
     @staticmethod
     def parse(input_line, env: Environment):
+        if '=' in input_line and not any(c in input_line for c in ['|', '<', '>']):
+            parts = input_line.split('=', 1)
+            if len(parts) == 2:
+                var_name = parts[0].strip()
+                var_value = parts[1].strip()
+                if var_name and not var_name.startswith('-'):
+                    if (var_value.startswith('"') and var_value.endswith('"')) or \
+                            (var_value.startswith("'") and var_value.endswith("'")):
+                        var_value = var_value[1:-1]
+                    env.set_variable(var_name, var_value)
+                    return []
+
         substitute_line = env.substitute_vars(input_line)
         commands = substitute_line.split('|')
 
         if not commands:
             return []
-        if len(commands) == 1:
-            if len(commands[0].split()) == 1:
-                command_name = commands[0].split()[0]
-                if '=' in command_name:
-                    lhs, rhs = command_name.split('=')
-                    env.set_variable(lhs.strip(), rhs.strip())
-                    return []
 
-        return [Parser.single_parse(command) for command in commands]
+        processed_commands = []
+        for command in commands:
+            stripped_command = command.strip()
+            if '=' in stripped_command:
+                parts = stripped_command.split('=', 1)
+                if len(parts) == 2:
+                    var_name = parts[0].strip()
+                    var_value = parts[1].strip()
+                    if var_name and not var_name.startswith('-'):
+                        if (var_value.startswith('"') and var_value.endswith('"')) or \
+                                (var_value.startswith("'") and var_value.endswith("'")):
+                            var_value = var_value[1:-1]
+                        env.set_variable(var_name, var_value)
+                        continue
+            processed_commands.append(command)
+
+        if not processed_commands:
+            return []
+
+        if len(processed_commands) == 1:
+            tokens = processed_commands[0].split()
+            if len(tokens) > 1 and '=' in tokens[1]:
+                new_tokens = []
+                for token in tokens[1:]:
+                    if '=' in token and not token.startswith('-'):
+                        var_name, var_value = token.split('=', 1)
+                        env.set_variable(var_name.strip(), var_value.strip())
+                    else:
+                        new_tokens.append(token)
+                if new_tokens:
+                    processed_commands[0] = f"{tokens[0]} {' '.join(new_tokens)}"
+                else:
+                    processed_commands[0] = tokens[0]
+
+        return [Parser.single_parse(command) for command in processed_commands if command.strip()]

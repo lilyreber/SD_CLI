@@ -16,6 +16,8 @@ class Pipeline:
             out_pipe = sys.stdout
             err_pipe = sys.stderr
 
+            curr_status_code = 0
+
             for i, cmd in enumerate(commands):
                 if i == 0:
                     r, write_d = os.pipe()

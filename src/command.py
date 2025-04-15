@@ -97,6 +97,7 @@ class Exit(Command):
         super().__init__('exit', args, flag_dict)
     
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+        # the presence of an extra argument does not affect anything.
         return exit(0)
     
 class External(Command):
