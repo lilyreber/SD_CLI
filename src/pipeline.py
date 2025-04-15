@@ -5,6 +5,9 @@ class Pipeline:
     curr_status_code = 0
 
     def execute(self, commands):
+        if len(commands) == 0:
+            print("Error: invalid arguments")
+            return
         if len(commands) == 1:
             return commands[0].run(sys.stdin, sys.stdout, sys.stderr)
         else:
@@ -19,6 +22,9 @@ class Pipeline:
             curr_status_code = 0
 
             for i, cmd in enumerate(commands):
+                if cmd is None:
+                    print("Error: invalid command")
+                    return
                 if i == 0:
                     r, write_d = os.pipe()
                     in_pipe = sys.stdin
@@ -35,8 +41,6 @@ class Pipeline:
 
                 curr_status_code = cmd.run(in_pipe, out_pipe, err_pipe)
                 read_d = r
-                # os.close(in_pipe_.fileno())
-                # os.close(out_pipe_.fileno())
                 if i != len(commands) - 1:
                     out_pipe.close()
 
