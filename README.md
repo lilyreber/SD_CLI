@@ -2,6 +2,12 @@
 [![Tests](https://github.com/lilyreber/SD_CLI/actions/workflows/python-app.yml/badge.svg)](https://github.com/lilyreber/SD_CLI/actions/workflows/python-app.yml/badge.svg)
 ![GitHub License](https://img.shields.io/github/license/lilyreber/SD_CLI)
 
+A simple command line interpreter that supports the following commands:
+ * cat [FILE] — display the contents of a file
+ * echo — display its argument(s)
+ * wc [FILE] — display the number of lines, words, and bytes in a file
+ * pwd — print the current directory  
+ * exit — exit the interpreter
 
 The system is a command interpreter (CLI) designed to process user input, execute commands, and manage the environment. 
 The interpreter must be able to work with pipelines (the “|” operator), environment variables, double and single quotes. 
@@ -13,8 +19,6 @@ The following commands must be supported:
 * exit — exit the interpreter
 * grep is a command—line utility that finds lines matching a given regular expression and outputs them.
 * calling an external program via Process (or its analogues), if the entered command is not described above.
-
-
 
 
 # Installation
