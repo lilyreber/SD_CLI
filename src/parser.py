@@ -1,6 +1,7 @@
 from command import CommandFactory
 import argparse
 import os
+import sys
 import shlex
 from environment import Environment
 
@@ -17,7 +18,7 @@ class Parser:
 
             command_name = tokens[0]
 
-            # Special handling for grep
+            # # Special handling for grep
             if command_name == 'grep':
                 parser = argparse.ArgumentParser(prog="grep", add_help=False)
 
@@ -25,7 +26,7 @@ class Parser:
                 parser.add_argument("-i", "--ignore-case", action="store_true", help="ignore case")
                 parser.add_argument("-A", "--after", type=int, help="number of strings after match to print")
                 parser.add_argument("pattern", type=str, help="pattern to search for")
-                parser.add_argument("file", type=str, help="file to search in")
+                parser.add_argument("file", type=str, nargs="?",help="file to search in", default=None)
 
                 try:
                     parse_string = ' '.join(tokens[1:])
@@ -38,7 +39,7 @@ class Parser:
                     flag_dict.pop('file')
                 except SystemExit:
                     # argparse throws this on bad args
-                    print("Error: invalid arguments for grep.")
+                    print("Error: invalid arguments for grep.", file=sys.stderr)
                     return None
 
             elif not CommandFactory.is_enum_value(command_name.upper()):
@@ -47,6 +48,7 @@ class Parser:
             else:
                 args = tokens[1:]
                 flag_dict = {}
+                new_args = []
                 i = 0
                 while i < len(args):
                     token = args[i]
@@ -59,12 +61,15 @@ class Parser:
                             i += 1
                         else:
                             flag_dict[token] = None
+                    else:
+                        new_args.append(token)
                     i += 1
+                args = new_args
 
             return CommandFactory.build_command(command_name.upper(), args=args, flag_dict=flag_dict)
 
         except Exception as e:
-            print(f"Error while parsing command: {e}")
+            print(f"Error while parsing command: {e}", file=sys.stderr)
             return None
 
     @staticmethod
@@ -87,13 +92,13 @@ class Parser:
                         if lhs:
                             env.set_variable(lhs, rhs)
                         else:
-                            print("Invalid variable assignment.")
+                            print("Invalid variable assignment.", file=sys.stderr)
                     else:
-                        print("Invalid variable assignment.")
+                        print("Invalid variable assignment.", file=sys.stderr)
                     return []
 
-            return [cmd for cmd in (Parser.single_parse(command.strip()) for command in commands) if cmd is not None]
+            return [cmd for cmd in (Parser.single_parse(command.strip()) for command in commands)]
 
         except Exception as e:
-            print(f"Error while parsing line: {e}")
+            print(f"Error while parsing line: {e}", file=sys.stderr)
             return []

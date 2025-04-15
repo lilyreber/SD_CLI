@@ -149,10 +149,15 @@ class Grep(Command):
         super().__init__('grep', args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        regex_pattern, filename = self._args[0], self._args[1]
+        regex_pattern = self._args[0]
+        filename = self._args[1]
         flag_i = self._flag_dict.get("ignore_case")
         flag_A = self._flag_dict.get("after") or 0
         flag_w = self._flag_dict.get("word")
+
+        if flag_A < 0:
+            print("grep: -A argument can't be negative", file=stderr)
+            return 2
 
         if flag_w:
             # Match whole words only
@@ -161,10 +166,14 @@ class Grep(Command):
         flags = 0
         if flag_i is not None:
             flags = re.IGNORECASE
+        try:
+            pattern = re.compile(regex_pattern, flags=flags)
 
-        pattern = re.compile(regex_pattern, flags=flags)
+            if filename is None:
+                file = stdin
+            else:
+                file = open(filename, "r", encoding="utf-8")
 
-        with open(filename, "r", encoding="utf-8") as file:
             lines = [line.rstrip("\n") for line in file.readlines()]
             found = False
             for i, line in enumerate(lines):
@@ -176,6 +185,12 @@ class Grep(Command):
                             break
                         print(lines[i + j], file=stdout)
                     print(25 * "-", file=stdout)  # Separator
+            if filename is not None:
+                file.close()
+        except FileNotFoundError:
+            print("grep: file not found", file=stderr)
+            return 2
+
         return 0 if found else 1
 
 

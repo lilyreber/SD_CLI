@@ -2,7 +2,10 @@ import os
 
 from src.command import *
 from src.environment import Environment
+from src.pipeline import Pipeline
 from src.parser import Parser
+import pytest
+import io
 
 
 def test_substitute_simple():
@@ -91,6 +94,7 @@ def test_execute_echo():
     res.seek(0)
     assert res.read().strip() == "test output"
     assert ret == 0
+    os.remove("res")
 
 def test_execute_pwd():
     import os
@@ -259,3 +263,98 @@ def test_unknown():
     res.seek(0)
     output = res.read()
     assert output == "Program name is unknown\n"
+
+def test_grep_basic_file():
+    with open("build.gradle", "w") as f:
+        f.write("apply plugin: 'java'\n")
+        f.write("version = '1.0'\n")
+
+    env = Environment()
+    command = Parser.parse('grep plugin build.gradle', env)[0]
+    res = open("res", "w+")
+    ret = command.run(stdout=res)
+    res.seek(0)
+    output = res.read()
+    assert "plugin" in output
+    assert ret == 0
+
+def test_grep_basic_pipe():
+    with open("build.gradle", "w") as f:
+        f.write("apply plugin: 'java'\n")
+        f.write("version = '1.0'\n")
+
+    cat_cmd = Cat(args=["build.gradle"])
+    grep_cmd = Parser.parse("grep plugin", Environment())[0]
+    pipe_read, pipe_write = os.pipe()
+    with os.fdopen(pipe_write, "w") as w:
+        cat_cmd.run(stdout=w)
+    with os.fdopen(pipe_read, "r") as r:
+        res = open("res", "w+")
+        grep_cmd.run(stdin=r, stdout=res)
+    res.seek(0)
+    assert "plugin" in res.read()
+
+def test_grep_regex():
+    with open("build.gradle", "w") as f:
+        f.write("apply plugin: 'java'\n")
+        f.write("apply plulin: 'kotlin'\n")
+
+    env = Environment()
+    command = Parser.parse('grep p.u.*n build.gradle', env)[0]
+    res = open("res", "w+")
+    command.run(stdout=res)
+    res.seek(0)
+    output = res.read()
+    assert "plugin" in output
+    assert "plulin" in output
+
+
+def run_with_stderr(cmdline: str):
+    env = Environment()
+    command = Parser.parse(cmdline, env)[0]
+    stderr = io.StringIO()
+    ret = command.run(stderr=stderr)
+    stderr.seek(0)
+    return ret, stderr.read()
+
+def test_grep_invalid_A_missing_argument():
+    try:
+        env = Environment()
+        file = open("err", "w+")
+        sys.stderr = file
+        command = Parser.parse("grep -A plugin build.gradle", env)[0]
+    except IndexError:
+        file.seek(0)
+        assert "invalid int" in file.read()
+        file.close()
+    finally:
+        sys.stderr = sys.__stderr__ 
+        os.remove("err")
+
+def test_grep_invalid_negative_after():
+    ret, err = run_with_stderr("grep -A -1 plugin build.gradle")
+    assert ret != 0
+    assert "error" in err.lower() or err.strip() != ""
+
+def test_grep_invalid_missing_file():
+    ret, err = run_with_stderr("grep plugin ololo")
+    assert ret != 0
+    assert "file not found" in err
+
+def test_cat_grep_wc_chain():
+    with open("data.txt", "w") as f:
+        f.write("apple\nbanana\napple pie\norange\n")
+
+    env = Environment()
+    out = open("out", 'w+')
+    sys.stdout = out
+    command = Parser.parse("cat data.txt | grep -i 'apple' | wc ", env)
+    ret = Pipeline().execute(command)
+    out.seek(0)
+    output = out.read()
+    words = output.strip().split()
+    sys.stdout = sys.__stdout__
+    os.remove("data.txt")
+    os.remove("out")
+    assert int(words[0]) == 4
+    

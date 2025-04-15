@@ -6,7 +6,7 @@ class Pipeline:
 
     def execute(self, commands):
         if len(commands) == 0:
-            print("Error: invalid arguments")
+            # print("Error: invalid arguments")
             return
         if len(commands) == 1:
             return commands[0].run(sys.stdin, sys.stdout, sys.stderr)
