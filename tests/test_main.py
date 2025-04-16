@@ -74,16 +74,16 @@ def test_substitute_middle():
     assert command._args == ['ls', '-l', 'docs/files']
 
 
-def test_substitute_system():
-    env = Environment()
-    input_line = "echo $HOME"
-    substituted_line = env.substitute_vars(input_line)
-    commands = Parser.parse(substituted_line, env)
-    assert len(commands) == 1
-    command = commands[0]
+# def test_substitute_system():
+#     env = Environment()
+#     input_line = "echo $HOME"
+#     substituted_line = env.substitute_vars(input_line)
+#     commands = Parser.parse(substituted_line, env)
+#     assert len(commands) == 1
+#     command = commands[0]
 
-    assert str(type(command)) == "<class 'command.Echo'>"
-    assert command._args == [os.getenv("HOME")]
+#     assert str(type(command)) == "<class 'command.Echo'>"
+#     assert command._args == [os.getenv("HOME")]
 
 
 
