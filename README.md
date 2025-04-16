@@ -26,6 +26,10 @@ The following commands must be supported:
 git clone https://github.com/lilyreber/SD_CLI
 ```
 
+# Supported versions
+
+Works for Python >= 3.8 , <= 3.11. The rest wasn't tested.
+
 # Usage example
 ```bash
 python3 src/main.py
