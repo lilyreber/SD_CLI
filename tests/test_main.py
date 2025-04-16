@@ -346,7 +346,8 @@ def test_cat_grep_wc_chain():
     env = Environment()
     out = open("out", 'w+')
     sys.stdout = out
-    command = Parser.parse("cat data.txt | grep -i 'apple' | wc ", env)
+    env.set_variable('pattern', 'apple')
+    command = Parser.parse("cat data.txt | grep -i $pattern | wc ", env)
     ret = Pipeline().execute(command)
     out.seek(0)
     output = out.read()
