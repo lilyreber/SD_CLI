@@ -94,7 +94,7 @@ def test_execute_echo():
     res.seek(0)
     assert res.read().strip() == "test output"
     assert ret == 0
-    os.remove("res")
+    # os.remove("res")
 
 def test_execute_pwd():
     import os
@@ -147,8 +147,8 @@ def test_execute_ls():
     assert "file.txt" in res.read()
     assert ret == 0
 
-    os.remove("testdir/file.txt")
-    os.rmdir("testdir")
+    # os.remove("testdir/file.txt")
+    # os.rmdir("testdir")
 
 def test_parse_simple_echo():
     env = Environment()
@@ -329,7 +329,7 @@ def test_grep_invalid_A_missing_argument():
         file.close()
     finally:
         sys.stderr = sys.__stderr__ 
-        os.remove("err")
+        # os.remove("err")
 
 def test_grep_invalid_negative_after():
     ret, err = run_with_stderr("grep -A -1 plugin build.gradle")
@@ -354,7 +354,7 @@ def test_cat_grep_wc_chain():
     output = out.read()
     words = output.strip().split()
     sys.stdout = sys.__stdout__
-    os.remove("data.txt")
-    os.remove("out")
+    # os.remove("data.txt")
+    # os.remove("out")
     assert int(words[0]) == 4
     
