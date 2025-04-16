@@ -283,16 +283,13 @@ def test_grep_basic_pipe():
         f.write("apply plugin: 'java'\n")
         f.write("version = '1.0'\n")
 
-    cat_cmd = Cat(args=["build.gradle"])
-    grep_cmd = Parser.parse("grep plugin", Environment())[0]
-    pipe_read, pipe_write = os.pipe()
-    with os.fdopen(pipe_write, "w") as w:
-        cat_cmd.run(stdout=w)
-    with os.fdopen(pipe_read, "r") as r:
-        res = open("res", "w+")
-        grep_cmd.run(stdin=r, stdout=res)
+    command = Parser.parse("cat build.gradle | grep plugin", Environment())
+    res = open("res", "w+")
+    sys.stdout = res
+    ret = Pipeline().execute(command)
     res.seek(0)
     assert "plugin" in res.read()
+    sys.stdout = sys.__stdout__
 
 def test_grep_regex():
     with open("build.gradle", "w") as f:
@@ -302,6 +299,7 @@ def test_grep_regex():
     env = Environment()
     command = Parser.parse('grep p.u.*n build.gradle', env)[0]
     res = open("res", "w+")
+    sys.stdout = res
     command.run(stdout=res)
     res.seek(0)
     output = res.read()
