@@ -30,6 +30,7 @@ The system contains the following classes and interfaces:
 2) If two commands are called in a line they are anyway connected via pipe and the next command can’t be called before the previous because it depends on its output.
 3) Parser uses argparse library for parsing command line arguments.
 4) `External` uses subprocess from subprocess package.
+5) We used argparse to parse grep which makes the architecture worse, but any common parser will fail since it should know what flags require args and what do not, which implies that parser actually knows about commands...
 
 
 ## Pipeline:
