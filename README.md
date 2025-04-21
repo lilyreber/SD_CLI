@@ -26,6 +26,10 @@ The following commands must be supported:
 git clone https://github.com/lilyreber/SD_CLI
 ```
 
+# Supported versions
+
+Works for Python >= 3.8 , <= 3.11. The rest wasn't tested.
+
 # Usage example
 ```bash
 python3 src/main.py
@@ -51,6 +55,15 @@ Parser uses `argparse` library for parsing command line arguments.
   * Typer
     * requires Python 3.6+ and installation (pip install typer).
     * redundancy for simple scripts
+
+# Instructions for the CLI extension
+To add a new command, you must:
+* Create a new class inherited from the base Command class
+* Implement required methods: `run()` - contains the basic logic for executing the command
+* Add command name and class to enum `commands` in a class CommandFactory
+ 
+
+
   
 ## Contributors
 * [Imamutdinova Liliia](https://github.com/lilyreber)
