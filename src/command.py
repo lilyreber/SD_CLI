@@ -164,7 +164,7 @@ class Grep(Command):
             regex_pattern = rf"\b{regex_pattern}\b"
 
         flags = 0
-        if flag_i is not None:
+        if flag_i is None:
             flags = re.IGNORECASE
         try:
             pattern = re.compile(regex_pattern, flags=flags)
