@@ -25,3 +25,5 @@ class CLI:
             except KeyboardInterrupt:
                 # Handle Ctrl+C interruption gracefully
                 print("\nUse 'exit' to quit.", file=sys.stdout)
+            except Exception as e:
+                print(f"Base exception is caught")

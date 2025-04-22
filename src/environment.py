@@ -31,18 +31,25 @@ class Environment:
 
     def substitute_vars(self, command_str: str) -> str:
         """
-        substitute environment variables in a string
+        Substitute environment variables in a string, 
+        но не трогает строки в одинарных кавычках.
 
         :param command_str: command
-        :return: string with substitute or original if not found
+        :return: string with substitution, кроме участков в одинарных кавычках
         """
 
-        def replace_match(match):
-            var_name = match.group(1) if match.group(1) is not None else match.group(2)
-            return self.__variables.get(var_name, "")
+        pattern = re.compile(r"(\'[^\']*\'|[^']+)")
 
-        return re.sub(
-            r'\$([A-Za-z_][A-Za-z0-9_]*)|\$\{([A-Za-z_][A-Za-z0-9_]*)\}',
-            replace_match,
-            command_str
-        )
+        def replace_in_segment(segment):
+            if segment.startswith("'") and segment.endswith("'"):
+                return segment
+
+            return re.sub(
+                r'\$([A-Za-z_][A-Za-z0-9_]*)|\$\{([A-Za-z_][A-Za-z0-9_]*)\}',
+                lambda match: self.__variables.get(
+                    match.group(1) or match.group(2), ""
+                ),
+                segment
+            )
+
+        return ''.join(replace_in_segment(m.group(0)) for m in pattern.finditer(command_str))
