@@ -8,6 +8,9 @@ class Pipeline:
         if len(commands) == 0:
             # print("Error: invalid arguments")
             return
+        if None in commands:
+            print("Some commands weren't parsed correctly", file=sys.stderr)
+            return
         if len(commands) == 1:
             return commands[0].run(sys.stdin, sys.stdout, sys.stderr)
         else:

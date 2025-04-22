@@ -18,7 +18,7 @@ class Parser:
 
             command_name = tokens[0]
 
-            # # Special handling for grep
+            # Special handling for grep
             if command_name == 'grep':
                 parser = argparse.ArgumentParser(prog="grep", add_help=False)
 
@@ -78,7 +78,7 @@ class Parser:
             substitute_line = env.substitute_vars(input_line)
             commands = substitute_line.split('|')
 
-            if not commands:
+            if commands == ['']:
                 return []
 
             # Handle variable assignment like x=1

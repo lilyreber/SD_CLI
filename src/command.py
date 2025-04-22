@@ -149,49 +149,54 @@ class Grep(Command):
         super().__init__('grep', args, flag_dict)
 
     def run(self, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
-        regex_pattern = self._args[0]
-        filename = self._args[1]
-        flag_i = self._flag_dict.get("ignore_case")
-        flag_A = self._flag_dict.get("after") or 0
-        flag_w = self._flag_dict.get("word")
+            regex_pattern = self._args[0]
+            filename = self._args[1]
+            flag_i = self._flag_dict.get("ignore_case")
+            flag_A = self._flag_dict.get("after") or 0
+            flag_w = self._flag_dict.get("word")
 
-        if flag_A < 0:
-            print("grep: -A argument can't be negative", file=stderr)
-            return 2
+            if flag_A < 0:
+                print("grep: -A argument can't be negative", file=stderr)
+                return 2
 
-        if flag_w:
-            # Match whole words only
-            regex_pattern = rf"\b{regex_pattern}\b"
+            if flag_w:
+                # Match whole words only
+                regex_pattern = rf"\b{regex_pattern}\b"
 
-        flags = 0
-        if flag_i is None:
-            flags = re.IGNORECASE
-        try:
-            pattern = re.compile(regex_pattern, flags=flags)
+            flags = 0
+            if flag_i is None:
+                flags = re.IGNORECASE
+            try:
+                pattern = re.compile(regex_pattern, flags=flags)
 
-            if filename is None:
-                file = stdin
-            else:
-                file = open(filename, "r", encoding="utf-8")
+                if filename is None:
+                    file = stdin
+                else:
+                    file = open(filename, "r", encoding="utf-8")
 
-            lines = [line.rstrip("\n") for line in file.readlines()]
-            found = False
-            for i, line in enumerate(lines):
-                if pattern.search(line):
-                    found = True
-                    # Print match and N following lines
-                    for j in range(flag_A + 1):
-                        if i + j >= len(lines):
-                            break
-                        print(lines[i + j], file=stdout)
-                    print(25 * "-", file=stdout)  # Separator
-            if filename is not None:
-                file.close()
-        except FileNotFoundError:
-            print("grep: file not found", file=stderr)
-            return 2
+                lines = [line.rstrip("\n") for line in file.readlines()]
+                found = False
+                i = 0
+                while i < len(lines):
+                    line = lines[i]
+                    if pattern.search(line):
+                        found = True
+                        # Print match and N following lines
+                        for j in range(flag_A + 1):
+                            if i + j >= len(lines):
+                                break
+                            print(lines[i + j], file=stdout)
+                        i+=flag_A
+                        print(25 * "-", file=stdout)  # Separator
+                    i+=1
+                if filename is not None:
+                    file.close()
+            except FileNotFoundError:
+                print("grep: file not found", file=stderr)
+                return 2
 
-        return 0 if found else 1
+            return 0 if found else 1
+
 
 
 class CommandFactory:
