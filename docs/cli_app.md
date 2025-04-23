@@ -31,6 +31,7 @@ The system contains the following classes and interfaces:
 3) Parser uses argparse library for parsing command line arguments.
 4) `External` uses subprocess from subprocess package.
 5) We used argparse to parse grep which makes the architecture worse, but any common parser will fail since it should know what flags require args and what do not, which implies that parser actually knows about commands...
+6) grep parsing uses argparse because it is impossible to make a common parser that knows which flags need arguments and which do not. It breaks the architecture in this place, gives abstraction leak but fixing it now would take much effort.
 
 
 ## Pipeline:
